@@ -2,9 +2,7 @@
 
 var Web3 = require('web3');
 var http = require('http');
-
 var settings = require('./settings');
-
 
 const web3 = new Web3(new Web3.providers.HttpProvider(settings.ethnet));
 
@@ -49,7 +47,6 @@ wallets.redistribute = function (wallet, delay = 2000) {
 }
 
 wallets.transaction = function (callback) {
-
     this.sort((a, b) => {
         if (a.free === true && b.free === false) return -1;
         if (a.free === false && b.free === true) return 1;
@@ -58,7 +55,6 @@ wallets.transaction = function (callback) {
         }
         return 0;
     });
-
     log("* Select wallet")
     this.forEach((wallet) => {
         log(`* ${wallet.name} : ${wallet.balance} : ${wallet.free}`);
@@ -68,7 +64,6 @@ wallets.transaction = function (callback) {
         log('request denied, all wallets are busy.');
         throw new Error('All wallets are busy');
     }
-
     log(`# ${wallets[0].name} will be use`);
     this.makeTransfer(wallets[0], settings.receiver, settings.payment, callback);
 };
@@ -82,7 +77,6 @@ wallets.makeTransfer = function (wallet, reciver, value, callback = () => {
         "gas": 200000,
         "chainId": 3
     };
-
     wallet.free = false;
     wallet.decryptedAccount.signTransaction(rawTransaction)
         .then(signedTx => web3.eth.sendSignedTransaction(signedTx.rawTransaction))
@@ -120,4 +114,3 @@ console.log("Ready on port 5454");
 function log(message) {
     console.log((new Date()).toISOString() + '    ' + message);
 }
-
